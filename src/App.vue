@@ -2,9 +2,6 @@
 import { onMounted } from "vue";
 import getData from "./composables/getData";
 import { saveStorage, getStorage } from "./composables/localStorage";
-import Button from "./components/Button.vue";
-import BookmarkHeader from "./components/BookmarkHeader.vue";
-import Header from "./components/Header.vue";
 
 onMounted(() => {
   const bookmarks = getData();
@@ -16,16 +13,38 @@ onMounted(() => {
   <Header />
   <BookmarkHeader label="All Bookmarks" />
   <section class="grid mx-width">
+    <Card />
+    <Card />
+    <Card />
+    <Card />
+    <Card />
   </section>
 </template>
 
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: auto;
   grid-row-gap: var(--spacing-400);
   grid-column-gap: var(--spacing-400);
-  
+}
+
+@media (max-width: 1800px) {
+  .grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 1150px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .grid {
+    display: block;
+  }
 }
 </style>

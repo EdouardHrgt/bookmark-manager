@@ -92,7 +92,6 @@ button {
   align-items: center;
 }
 
-.btn-1,
 .btn-2 {
   display: flex;
   align-items: center;
@@ -101,13 +100,6 @@ button {
   cursor: pointer;
 }
 
-.btn-1 {
-  width: 163px;
-  height: 42px;
-  border-radius: 8px;
-}
-
-.btn-1:hover,
 .btn-2:hover {
   opacity: 0.7;
 }
@@ -181,7 +173,12 @@ button {
 }
 
 h1,
-h2,h3,h4,p,a,strong {
+h2,
+h3,
+h4,
+p,
+a,
+strong {
   color: var(--neutral-900);
 }
 
@@ -190,7 +187,18 @@ h2,h3,h4,p,a,strong {
 
 @media (max-width: 800px) {
   .tp1 {
-  font-size: 20px;
-  line-height: 120%;
-}
+    font-size: 20px;
+    line-height: 120%;
+  }
+
+  .minimized {
+    width: 40px;
+    height: 40px;
+  }
+  .minimized p {
+    display: none;
+  }
+  .minimized svg {
+    margin-right: 0;
+  }
 }
