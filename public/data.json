@@ -1,7 +1,7 @@
 {
   "bookmarks": [
     {
-      "id": "1",
+      "id": 1,
       "title": "GitHub",
       "url": "https://github.com",
       "favicon": "/images/favicon-github.png",
@@ -14,7 +14,7 @@
       "lastVisited": "2025-09-24T15:30:00Z"
     },
     {
-      "id": "2",
+      "id": 2,
       "title": "Stack Overflow",
       "url": "https://stackoverflow.com",
       "favicon": "/images/favicon-stack-overflow.png",
@@ -27,7 +27,7 @@
       "lastVisited": "2025-09-24T11:00:00Z"
     },
     {
-      "id": "3",
+      "id": 3,
       "title": "MDN Web Docs",
       "url": "https://developer.mozilla.org",
       "favicon": "/images/favicon-mdn.png",
@@ -40,7 +40,7 @@
       "lastVisited": "2025-09-24T09:20:00Z"
     },
     {
-      "id": "4",
+      "id": 4,
       "title": "CSS-Tricks",
       "url": "https://css-tricks.com",
       "favicon": "/images/favicon-css-tricks.png",
@@ -53,7 +53,7 @@
       "lastVisited": "2025-09-22T16:30:00Z"
     },
     {
-      "id": "5",
+      "id": 5,
       "title": "Frontend Mentor",
       "url": "https://www.frontendmentor.io",
       "favicon": "/images/favicon-frontend-mentor.png",
@@ -66,7 +66,7 @@
       "lastVisited": "2025-09-23T14:45:00Z"
     },
     {
-      "id": "6",
+      "id": 6,
       "title": "Smashing Magazine",
       "url": "https://www.smashingmagazine.com",
       "favicon": "/images/favicon-smashing-magazine.png",
@@ -79,7 +79,7 @@
       "lastVisited": "2025-09-10T11:15:00Z"
     },
     {
-      "id": "7",
+      "id": 7,
       "title": "Can I Use",
       "url": "https://caniuse.com",
       "favicon": "/images/favicon-caniuse.png",
@@ -92,7 +92,7 @@
       "lastVisited": "2025-09-20T10:00:00Z"
     },
     {
-      "id": "8",
+      "id": 8,
       "title": "CodePen",
       "url": "https://codepen.io",
       "favicon": "/images/favicon-codepen.png",
@@ -105,7 +105,7 @@
       "lastVisited": "2025-09-18T17:30:00Z"
     },
     {
-      "id": "9",
+      "id": 9,
       "title": "CSS Grid Garden",
       "url": "https://cssgridgarden.com",
       "favicon": "/images/favicon-css-grid-garden.png",
@@ -118,7 +118,7 @@
       "lastVisited": "2025-07-15T15:45:00Z"
     },
     {
-      "id": "10",
+      "id": 10,
       "title": "Flexbox Froggy",
       "url": "https://flexboxfroggy.com",
       "favicon": "/images/favicon-flexbox-froggy.png",
@@ -131,7 +131,7 @@
       "lastVisited": "2025-06-12T14:20:00Z"
     },
     {
-      "id": "11",
+      "id": 11,
       "title": "freeCodeCamp",
       "url": "https://www.freecodecamp.org",
       "favicon": "/images/favicon-freecodecamp.png",
@@ -144,7 +144,7 @@
       "lastVisited": "2025-08-30T13:40:00Z"
     },
     {
-      "id": "12",
+      "id": 12,
       "title": "JavaScript.info",
       "url": "https://javascript.info",
       "favicon": "/images/favicon-javascript-info.png",
@@ -157,7 +157,7 @@
       "lastVisited": "2025-09-15T09:15:00Z"
     },
     {
-      "id": "13",
+      "id": 13,
       "title": "Dev.to",
       "url": "https://dev.to",
       "favicon": "/images/favicon-dev.png",
@@ -170,7 +170,7 @@
       "lastVisited": "2025-09-21T08:45:00Z"
     },
     {
-      "id": "14",
+      "id": 14,
       "title": "Tailwind CSS",
       "url": "https://tailwindcss.com",
       "favicon": "/images/favicon-tailwind.png",
@@ -183,7 +183,7 @@
       "lastVisited": "2025-09-19T16:10:00Z"
     },
     {
-      "id": "15",
+      "id": 15,
       "title": "Web.dev",
       "url": "https://web.dev",
       "favicon": "/images/favicon-web-dev.png",
@@ -196,7 +196,7 @@
       "lastVisited": "2025-08-16T14:55:00Z"
     },
     {
-      "id": "16",
+      "id": 16,
       "title": "Claude",
       "url": "https://claude.ai",
       "favicon": "/images/favicon-claude.png",
@@ -209,7 +209,7 @@
       "lastVisited": "2025-09-23T11:20:00Z"
     },
     {
-      "id": "17",
+      "id": 17,
       "title": "React Docs",
       "url": "https://react.dev",
       "favicon": "/images/favicon-react-docs.png",
@@ -222,7 +222,7 @@
       "lastVisited": null
     },
     {
-      "id": "18",
+      "id": 18,
       "title": "Flexbox Zombies",
       "url": "https://mastery.games/flexboxzombies",
       "favicon": "/images/favicon-flexbox-zombies.png",
