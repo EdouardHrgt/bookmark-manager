@@ -10,15 +10,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <Header />
-  <BookmarkHeader label="All Bookmarks" />
-  <section class="grid mx-width">
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-    <Card />
-  </section>
+  <Sidebar />
+  <div>
+    <Header />
+    <BookmarkHeader label="All Bookmarks" />
+    <main class="grid mx-width">
+      <Card />
+    </main>
+  </div>
 </template>
 
 <style scoped>

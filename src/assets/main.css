@@ -4,10 +4,12 @@
   background-color: var(--neutral-300);
   min-height: 100svh;
   overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 300px auto;
 }
 
 .mx-width {
-  padding-inline: 2.5rem;
+  padding-inline: 32px;
 }
 
 @media (hover: hover) {
@@ -20,6 +22,9 @@
   .mx-width {
     padding-inline: 2rem;
   }
+  #app {
+  display: block;
+}
 }
 
 @media (max-width: 800px) {
