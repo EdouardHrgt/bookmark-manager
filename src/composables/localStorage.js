@@ -3,7 +3,6 @@ export function saveStorage(key, data) {
     console.error("Error saving datas in Storage");
     return;
   }
-  console.log(data);
   const label = key.toUpperCase();
   localStorage.setItem(label, data);
 }

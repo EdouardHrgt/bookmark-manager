@@ -4,13 +4,11 @@ defineProps({
   label: String,
   value: Number,
 });
-
-// Emmit the state of the checkbox
 </script>
 
 <template>
   <div class="tag flex">
-    <input type="checkbox" name="tag" />
+    <input type="radio" name="tag" />
     <label class="tp3" for="tag">AI</label>
     <div class="value flex"><p class="tp5">8</p></div>
   </div>
@@ -21,10 +19,12 @@ defineProps({
   padding-block: 9.7px;
   padding-inline: 8px;
 }
+
 input {
   aspect-ratio: 1/1;
   width: 16px;
 }
+
 .value {
   background-color: var(--neutral-100);
   border: 1px solid var(--neutral-300);

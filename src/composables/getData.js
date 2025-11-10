@@ -9,6 +9,7 @@ async function getData() {
     return result;
   } catch (err) {
     console.error(err.message);
+    return null;
   }
 }
 

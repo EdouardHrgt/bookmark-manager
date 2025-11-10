@@ -58,8 +58,8 @@ const icons = [
       <p class="tp4-medium">
         {{ txt }}
       </p>
-      <div class="tags flex" v-for="(tag, i) in tags">
-        <p key="i">
+      <div class="tags flex">
+        <p v-for="(tag, i) in tags" key="i">
           <strong class="tp-5 tag">{{ tag }}</strong>
         </p>
       </div>
@@ -219,8 +219,7 @@ article strong {
   article {
     max-width: unset;
     width: 100%;
-    border: 1px solid #000;
     margin-block: 32px;
-} 
+  }
 }
 </style>

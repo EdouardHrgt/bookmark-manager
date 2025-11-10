@@ -9,7 +9,6 @@
         viewBox="0 0 20 20"
       >
         <path
-          stroke="#051513"
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="1.6"
@@ -27,7 +26,6 @@
         viewBox="0 0 20 20"
       >
         <path
-          stroke="#051513"
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="1.6"
@@ -42,6 +40,10 @@
 <style scoped>
 nav {
   margin-block: 16px;
+}
+
+svg {
+  stroke: var(--neutral-900);
 }
 
 .navigation {

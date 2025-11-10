@@ -11,9 +11,23 @@ defineProps({
 </script>
 
 <template>
-  <button :class="{ minimized: isMinimized }" :style="{ backgroundColor: background, color: color }">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M10 4.167v11.666M4.167 10h11.667" />
+  <button
+    :class="{ minimized: isMinimized }"
+    :style="{ backgroundColor: background, color: color }"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      fill="none"
+      viewBox="0 0 20 20"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.6"
+        d="M10 4.167v11.666M4.167 10h11.667"
+      />
     </svg>
     <p class="tp3">{{ label }}</p>
   </button>
@@ -35,14 +49,13 @@ button:hover {
   opacity: 0.7;
 }
 
-button svg,
-button p {
-  stroke: var(--neutral-0);
-  color: var(--neutral-0);
+button svg {
+  stroke: var(--base-white);
 }
 
 button p {
   margin-left: 5px;
+  color: var(--base-white);
 }
 
 @media (max-width: 800px) {

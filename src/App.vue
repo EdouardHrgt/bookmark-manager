@@ -1,11 +1,25 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, provide, ref } from "vue";
 import getData from "./composables/getData";
 import { saveStorage, getStorage } from "./composables/localStorage";
 
-onMounted(() => {
-  const bookmarks = getData();
-  console.log(bookmarks);
+const activeTheme = ref("light");
+const datas = ref(null);
+
+const setTheme = (theme) => {
+  activeTheme.value = theme;
+  document.documentElement.setAttribute("data-theme", theme);
+};
+
+onMounted(async () => {
+  const result = await getData();
+  datas.value = result.bookmarks;
+  saveStorage("bookmarks", result.bookmarks);
+});
+
+provide("theme", {
+  activeTheme,
+  setTheme,
 });
 </script>
 
@@ -15,7 +29,16 @@ onMounted(() => {
     <Header />
     <BookmarkHeader label="All Bookmarks" />
     <main class="grid mx-width">
-      <Card />
+      <Card
+        v-for="(data, i) in datas"
+        :key="i"
+        :label="data.title"
+        :avatar="data.favicon"
+        :url="data.url"
+        :txt="data.description"
+        :tags="data.tags"
+        :metrix="data.metrix"
+      />
     </main>
   </div>
 </template>
@@ -35,7 +58,7 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 1150px) {
+@media (max-width: 1440px) {
   .grid {
     grid-template-columns: 1fr 1fr;
   }
