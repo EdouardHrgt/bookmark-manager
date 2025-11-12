@@ -40,14 +40,14 @@
 
 :root[data-theme='dark'] {
   --base-white: #ffffff;
-  --neutral-900: #ffffff;  
-  --neutral-800: #b1b9b9; 
-  --neutral-600: #00706e;  
-  --neutral-500: #004746; 
-  --neutral-400: #004241; 
+  --neutral-900: #ffffff;
+  --neutral-800: #b1b9b9;
+  --neutral-600: #00706e;
+  --neutral-500: #004746;
+  --neutral-400: #004241;
   --neutral-300: #002e2d;
   --neutral-100: #001f1f;
-  --neutral-0:   #001414;
+  --neutral-0: #001414;
 }
 
 * {
@@ -96,16 +96,17 @@ button {
   align-items: center;
 }
 
-.btn-2 {
+.btn {
+  border-radius: 8px;
+}
+
+.btn-2,
+.btn {
   display: flex;
   align-items: center;
   justify-content: center;
   transition: opacity 0.2s ease-in;
   cursor: pointer;
-}
-
-.btn-2:hover {
-  opacity: 0.7;
 }
 
 .btn-2 {
@@ -186,8 +187,7 @@ strong {
   color: var(--neutral-900);
 }
 
-@media (max-width: 1024px) {
-}
+@media (max-width: 1024px) {}
 
 @media (max-width: 800px) {
   .tp1 {
@@ -199,9 +199,11 @@ strong {
     width: 40px;
     height: 40px;
   }
+
   .minimized p {
     display: none;
   }
+
   .minimized svg {
     margin-right: 0;
   }

@@ -1,6 +1,4 @@
 <script setup>
-import { ref, defineProps } from "vue";
-
 defineProps({
   label: String,
   link: String,
