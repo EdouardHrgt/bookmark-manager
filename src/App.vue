@@ -1,40 +1,39 @@
 <script setup>
-import { onMounted, provide, ref } from "vue";
-import useFetch from "./composables/useFetch";
-import { saveStorage, getStorage } from "./composables/localStorage";
-import BookmarkEdit from "./components/BookmarkEdit.vue";
+import { onMounted, provide, ref, computed } from "vue"
+import useFetch from "./composables/useFetch"
+import { saveStorage, getStorage } from "./composables/localStorage"
+import useToggle from "./composables/useToggle"
+import BookmarkEdit from "./components/BookmarkModal.vue"
 
-const activeTheme = ref("light");
-const bookmarks = ref(null);
-const mobileMenu = ref(false);
-const addOrEdit = ref(false);
+const activeTheme = ref("light")
+const datas = ref(null)
+const mobileMenu = ref(false)
+const addOrEdit = ref(false)
+const archived = ref(false);
 
-const setTheme = (theme) => {
-  activeTheme.value = theme;
-  document.documentElement.setAttribute("data-theme", theme);
-  saveStorage("theme", theme);
-};
-
-const toggleMobileMenu = (bool) => {
-  if (typeof bool === 'boolean') {
-    mobileMenu.value = bool
-  } else {
-    mobileMenu.value = !mobileMenu.value
+const initTheme = () => {
+  const savedTheme = getStorage("theme")
+  if (savedTheme) {
+    activeTheme.value = savedTheme
+    document.documentElement.setAttribute("data-theme", savedTheme)
   }
 }
+initTheme()
 
-const toggleAddOrEdit = (bool) => {
-  if (typeof bool === 'boolean') {
-    addOrEdit.value = bool
-  } else {
-    addOrEdit.value = !addOrEdit.value
-  }
+const setTheme = (theme) => {
+  activeTheme.value = theme
+  document.documentElement.setAttribute("data-theme", theme);
+  saveStorage("theme", theme)
 }
 
 onMounted(async () => {
   const result = await useFetch();
-  bookmarks.value = result.bookmarks;
+  datas.value = result;
 });
+
+const toggleMobileMenu = useToggle(mobileMenu)
+const toggleAddOrEdit = useToggle(addOrEdit)
+const toggleArchived = useToggle(archived)
 
 provide("theme", {
   activeTheme,
@@ -46,21 +45,37 @@ provide("menu", {
   toggleMobileMenu,
 })
 
-provide("bookmarks", {
-  bookmarks,
+provide("datas", {
+  datas,
 })
 
 provide("addOrEdit", {
   addOrEdit,
   toggleAddOrEdit,
 })
+
+provide("archived", {
+  archived,
+  toggleArchived,
+})
+
+const bookmarks = computed(() => {
+  if (!datas.value) return []
+
+  if (archived.value === false) {
+    return datas.value
+  } else {
+    return datas.value.filter((data) => data.isArchived)
+  }
+})
+
 </script>
 
 <template>
   <Sidebar />
   <div>
     <Header />
-    <BookmarkHeader label="All Bookmarks" />
+    <BookmarkHeader :label="archived ? 'All Archived' : 'All Bookmarks'" />
     <BookmarkEdit v-if="addOrEdit" />
     <main class="grid mx-width">
       <Card v-for="data in bookmarks" :key="data.id" :label="data.title" :avatar="data.favicon" :url="data.url"
@@ -78,6 +93,7 @@ provide("addOrEdit", {
   grid-template-rows: auto;
   grid-row-gap: var(--spacing-400);
   grid-column-gap: var(--spacing-400);
+  padding-bottom: 32px;
 }
 
 @media (max-width: 1800px) {

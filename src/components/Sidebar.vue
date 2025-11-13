@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from "vue";
 const { mobileMenu, toggleMobileMenu } = inject("menu");
-const bookmarks = inject("bookmarks");
+const datas = inject("datas");
 </script>
 
 <template>

@@ -1,37 +1,36 @@
 <script setup>
 import { ref } from "vue";
-import { defineProps } from "vue";
+import { inject } from "vue";
+import { vClickOutside } from "@/directives/clickOutside";
+
+const sortOptions = ["Recently added", "Recently visited", "Most visited"]
+
+const isOpen = ref(false)
+const { archived, toggleArchived } = inject('archived')
 
 defineProps({
   label: String,
-});
+})
 
-const sortOptions = ref(["Recently added", "Recntly visited", "Most visited"]);
+const closeDropdown = () => {
+  isOpen.value = false;
+};
+
+
 </script>
 
 <template>
   <section class="flex bookmark-header mx-width">
     <h1 class="tp1">{{ label }}</h1>
-    <div class="dropdown">
-      <div class="dropdown-label flex">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          fill="none"
-          viewBox="0 0 20 20"
-        >
-          <path
-            stroke=""
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.6"
-            d="M14.167 3.333v13.334m0 0-3.334-3.334m3.334 3.334 3.333-3.334M5.833 16.667V3.333m0 0L2.5 6.667m3.333-3.334 3.334 3.334"
-          />
+    <div class="dropdown" v-click-outside="closeDropdown">
+      <div class="dropdown-label flex" @click="isOpen = !isOpen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
+          <path stroke="" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+            d="M14.167 3.333v13.334m0 0-3.334-3.334m3.334 3.334 3.333-3.334M5.833 16.667V3.333m0 0L2.5 6.667m3.333-3.334 3.334 3.334" />
         </svg>
         <p class="tp3">Sort by</p>
-        <div class="dropdown-options">
-          <p class="tp4">Recently added</p>
+        <div class="dropdown-options" v-if="isOpen">
+          <p class="tp4" v-for="(el, i) in sortOptions" :key="i">{{ el }}</p>
         </div>
       </div>
     </div>
@@ -53,10 +52,6 @@ const sortOptions = ref(["Recently added", "Recntly visited", "Most visited"]);
   position: relative;
 }
 
-.dropdown:hover .dropdown-options {
-  display: block;
-}
-
 .dropdown-label svg,
 .dropdown-label p {
   stroke: var(--neutral-900);
@@ -67,17 +62,28 @@ const sortOptions = ref(["Recently added", "Recntly visited", "Most visited"]);
 }
 
 .dropdown-options {
-  display: none;
   position: absolute;
   z-index: 5;
   top: 100%;
-  right: 50%;
-  transform: translateX(50%);
+  right: 0;
   background-color: var(--neutral-0);
   padding: 1rem;
-  width: 8.7rem;
+  width: 10rem;
   text-align: center;
+  border-radius: 12px;
 }
+
+.dropdown-options p {
+  padding: 12px 0;
+  cursor: pointer;
+  transition: all .2s ease-in;
+}
+
+.dropdown-options p:hover {
+  box-shadow: 0 0 0 1px var(--neutral-300);
+border-radius: 8px;
+}
+
 
 @media (max-width: 800px) {
   .dropdown-options {
@@ -85,5 +91,4 @@ const sortOptions = ref(["Recently added", "Recntly visited", "Most visited"]);
     right: 0;
   }
 }
-
 </style>

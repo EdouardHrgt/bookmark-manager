@@ -1,5 +1,8 @@
 <script setup>
 import { ref, inject, computed } from 'vue'
+import { urlValidation } from '@/composables/useFormValidation'
+
+const test = urlValidation("toto");
 
 const { addOrEdit, toggleAddOrEdit } = inject('addOrEdit')
 

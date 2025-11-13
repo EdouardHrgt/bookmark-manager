@@ -1,6 +1,11 @@
+<script setup>
+import { inject } from 'vue';
+const { archived, toggleArchived} = inject('archived')
+</script>
+
 <template>
   <nav>
-    <a class="navigation flex" href="#">
+    <div class="navigation flex" @click="toggleArchived(false)">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"
@@ -16,8 +21,8 @@
         />
       </svg>
       <p class="tp3">Home</p>
-    </a>
-    <a class="navigation flex" href="#">
+    </div>
+    <div class="navigation flex" @click="toggleArchived(true)">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"
@@ -33,7 +38,7 @@
         />
       </svg>
       <p class="tp3">Archived</p>
-    </a>
+    </div>
   </nav>
 </template>
 

@@ -11,6 +11,7 @@
   --red-600: #fd4740;
   --red-800: #cb0a04;
   --base-white: #ffffff;
+  --very-dark: #020a09;
 
   /*=== SPACINGS ===*/
   --spacing-0: 0;
@@ -48,6 +49,7 @@
   --neutral-300: #002e2d;
   --neutral-100: #001f1f;
   --neutral-0: #001414;
+  --very-dark: #000000;
 }
 
 * {
@@ -56,6 +58,35 @@
   box-sizing: border-box;
   font-family: "Manrope", sans-serif;
   transition: color, background-color .3s ease-in;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-500);
+  border-radius: 10px;
+  border: 2px solid var(--neutral-100);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--teal-700);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--teal-800);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neutral-500) var(--neutral-100);
 }
 
 img {
