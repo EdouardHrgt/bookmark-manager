@@ -4,13 +4,13 @@ export function saveStorage(key, data) {
     return;
   }
   const label = key.toUpperCase();
-  localStorage.setItem(label, data);
+  localStorage.setItem(label, JSON.stringify(data))
 }
 
 export function getStorage(key) {
   if (key) {
     const label = key.toUpperCase();
-    return localStorage.getItem(label);
+    return JSON.parse(localStorage.getItem(label))
   }
   console.error("Error collecting datas in Storage");
 }

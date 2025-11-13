@@ -4,21 +4,15 @@ import useFetch from "./composables/useFetch"
 import { saveStorage, getStorage } from "./composables/localStorage"
 import useToggle from "./composables/useToggle"
 import BookmarkEdit from "./components/BookmarkModal.vue"
+import { watch } from "vue"
+import useSortByList from "./composables/useSortByList"
 
-const activeTheme = ref("light")
+const activeTheme = ref(getStorage("theme") || "light")
 const datas = ref(null)
 const mobileMenu = ref(false)
 const addOrEdit = ref(false)
 const archived = ref(false);
-
-const initTheme = () => {
-  const savedTheme = getStorage("theme")
-  if (savedTheme) {
-    activeTheme.value = savedTheme
-    document.documentElement.setAttribute("data-theme", savedTheme)
-  }
-}
-initTheme()
+const sortBy = ref('most visited')
 
 const setTheme = (theme) => {
   activeTheme.value = theme
@@ -27,9 +21,19 @@ const setTheme = (theme) => {
 }
 
 onMounted(async () => {
+  const storage = getStorage('bookmarks') || undefined
+  if (storage && storage.length > 0) {
+    datas.value = storage
+    return
+  }
   const result = await useFetch();
   datas.value = result;
+  saveStorage('bookmarks', result)
 });
+
+watch(datas, (newVal) => {
+  saveStorage('bookmarks', newVal)
+}, { deep: true })
 
 const toggleMobileMenu = useToggle(mobileMenu)
 const toggleAddOrEdit = useToggle(addOrEdit)
@@ -59,14 +63,19 @@ provide("archived", {
   toggleArchived,
 })
 
+provide('sortBy', sortBy)
+
 const bookmarks = computed(() => {
   if (!datas.value) return []
 
+  let filtered
   if (archived.value === false) {
-    return datas.value
+    filtered = datas.value.filter((data) => !data.isArchived)
   } else {
-    return datas.value.filter((data) => data.isArchived)
+    filtered = datas.value.filter((data) => data.isArchived)
   }
+
+  return useSortByList(sortBy.value, filtered)
 })
 
 </script>
@@ -77,11 +86,11 @@ const bookmarks = computed(() => {
     <Header />
     <BookmarkHeader :label="archived ? 'All Archived' : 'All Bookmarks'" />
     <BookmarkEdit v-if="addOrEdit" />
-    <main class="grid mx-width">
-      <Card v-for="data in bookmarks" :key="data.id" :label="data.title" :avatar="data.favicon" :url="data.url"
-        :txt="data.description" :tags="data.tags" :metrix="data.metrix" :visits="data.visitCount"
-        :created="data.createdAt" :visited="data.lastVisited" />
-    </main>
+      <TransitionGroup name="card-list" tag="main"  class="grid mx-width">
+        <Card v-for="(data, index) in bookmarks" :key="`${data.id}-${sortBy}-${archived}`" :style="{ '--index': index }" :label="data.title"
+          :avatar="data.favicon" :url="data.url" :txt="data.description" :tags="data.tags" :metrix="data.metrix"
+          :visits="data.visitCount" :created="data.createdAt" :visited="data.lastVisited" />
+      </TransitionGroup>
   </div>
   <Shade />
 </template>
@@ -94,6 +103,26 @@ const bookmarks = computed(() => {
   grid-row-gap: var(--spacing-400);
   grid-column-gap: var(--spacing-400);
   padding-bottom: 32px;
+}
+
+.card-list-enter-active {
+  animation: cardFadeIn .5s ease backwards;
+  animation-delay: calc(var(--index) * 0.08s);
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.card-list-leave-active {
+  display: none;
 }
 
 @media (max-width: 1800px) {

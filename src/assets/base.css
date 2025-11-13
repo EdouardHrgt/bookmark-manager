@@ -1,4 +1,5 @@
 :root {
+  --neutral-900-o: rgba(5, 21, 19, 0.5);
   --neutral-900: #051513;
   --neutral-800: #4c5c59;
   --neutral-500: #899492;
@@ -47,9 +48,10 @@
   --neutral-500: #004746;
   --neutral-400: #004241;
   --neutral-300: #002e2d;
-  --neutral-100: #001f1f;
+  --neutral-100: #004241;
   --neutral-0: #001414;
   --very-dark: #000000;
+  --neutral-900-o: rgba(0, 71, 70, 0.5);
 }
 
 * {
@@ -57,7 +59,11 @@
   margin: 0;
   box-sizing: border-box;
   font-family: "Manrope", sans-serif;
-  transition: color, background-color .3s ease-in;
+  user-select: none;
+}
+
+input:focus {
+  outline: 1px solid var(--teal-700);
 }
 
 ::-webkit-scrollbar {

@@ -7,15 +7,22 @@ const sortOptions = ["Recently added", "Recently visited", "Most visited"]
 
 const isOpen = ref(false)
 const { archived, toggleArchived } = inject('archived')
+const sortBy = inject('sortBy')
 
 defineProps({
   label: String,
 })
 
 const closeDropdown = () => {
-  isOpen.value = false;
-};
+  isOpen.value = false
+}
 
+const selectOption = (option) => {
+  sortBy.value = option
+    setTimeout(() => {
+    isOpen.value = false
+  }, 950)
+}
 
 </script>
 
@@ -30,7 +37,14 @@ const closeDropdown = () => {
         </svg>
         <p class="tp3">Sort by</p>
         <div class="dropdown-options" v-if="isOpen">
-          <p class="tp4" v-for="(el, i) in sortOptions" :key="i">{{ el }}</p>
+          <p class="tp4 flex" v-for="(el, i) in sortOptions" :key="i" @click.stop="selectOption(el)">
+            {{ el }}
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20"
+              v-if="sortBy.toLowerCase() === el.toLowerCase()">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                d="M16.666 5 7.5 14.167 3.333 10" />
+            </svg>
+          </p>
         </div>
       </div>
     </div>
@@ -45,9 +59,8 @@ const closeDropdown = () => {
 
 .dropdown {
   border-radius: 8px;
-  padding: 10px .7rem;
+  padding: 10px 1.2rem;
   background-color: var(--neutral-0);
-  border: 1px solid avr(var(--neutral-400));
   cursor: pointer;
   position: relative;
 }
@@ -67,21 +80,23 @@ const closeDropdown = () => {
   top: 100%;
   right: 0;
   background-color: var(--neutral-0);
-  padding: 1rem;
-  width: 10rem;
+  padding-block: 1.2rem;
+  width: 13rem;
   text-align: center;
   border-radius: 12px;
+  box-shadow: 0 4px 1rem var(--neutral-900-o);
 }
 
 .dropdown-options p {
-  padding: 12px 0;
+  padding: 12px 1rem;
   cursor: pointer;
   transition: all .2s ease-in;
+  justify-content: space-between;
 }
 
 .dropdown-options p:hover {
   box-shadow: 0 0 0 1px var(--neutral-300);
-border-radius: 8px;
+  border-radius: 8px;
 }
 
 

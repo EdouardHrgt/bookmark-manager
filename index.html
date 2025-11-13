@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang>
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
@@ -8,9 +8,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
     <title>Bookmak Manager</title>
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem('THEME')
+        if (savedTheme) {
+          try {
+            const theme = JSON.parse(savedTheme)
+            document.documentElement.setAttribute('data-theme', theme)
+          } catch (e) {
+            console.error('Error parsing theme:', e)
+          }
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>
