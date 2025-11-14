@@ -14,7 +14,7 @@ const addOrEdit = ref(false)
 const archived = ref(false);
 const sortBy = ref('most visited')
 const selectedTag = ref(null)
-
+const searchQuery = ref('')
 
 const setTheme = (theme) => {
   activeTheme.value = theme
@@ -43,6 +43,10 @@ const toggleArchived = useToggle(archived)
 
 const setSelectedTag = (tag) => {
   selectedTag.value = selectedTag.value === tag ? null : tag
+}
+
+const setSearchQuery = (query) => {
+  searchQuery.value = query
 }
 
 provide("theme", {
@@ -76,6 +80,11 @@ provide('tags', {
   setSelectedTag
 })
 
+provide('search', {
+  searchQuery,
+  setSearchQuery
+})
+
 const bookmarks = computed(() => {
   if (!datas.value) return []
 
@@ -85,8 +94,16 @@ const bookmarks = computed(() => {
   } else {
     filtered = datas.value.filter((data) => data.isArchived)
   }
+
   if (selectedTag.value) {
     filtered = filtered.filter(data => data.tags.includes(selectedTag.value))
+  }
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(data =>
+      data.title.toLowerCase().includes(query)
+    )
   }
 
   return useSortByList(sortBy.value, filtered)
@@ -100,11 +117,11 @@ const bookmarks = computed(() => {
     <Header />
     <BookmarkHeader :label="archived ? 'All Archived' : 'All Bookmarks'" />
     <BookmarkEdit v-if="addOrEdit" />
-      <TransitionGroup name="card-list" tag="main"  class="grid mx-width">
-        <Card v-for="(data, index) in bookmarks" :key="`${data.id}-${sortBy}-${archived}`" :style="{ '--index': index }" :label="data.title"
-          :avatar="data.favicon" :url="data.url" :txt="data.description" :tags="data.tags" :metrix="data.metrix"
-          :visits="data.visitCount" :created="data.createdAt" :visited="data.lastVisited" />
-      </TransitionGroup>
+    <TransitionGroup name="card-list" tag="main" class="grid mx-width">
+      <Card v-for="(data, index) in bookmarks" :key="`${data.id}-${sortBy}-${archived}`" :style="{ '--index': index }"
+        :label="data.title" :avatar="data.favicon" :url="data.url" :txt="data.description" :tags="data.tags"
+        :metrix="data.metrix" :visits="data.visitCount" :created="data.createdAt" :visited="data.lastVisited" />
+    </TransitionGroup>
   </div>
   <Shade />
 </template>
@@ -130,6 +147,7 @@ const bookmarks = computed(() => {
     opacity: 0;
     filter: blur(4px);
   }
+
   to {
     opacity: 1;
     filter: blur(0);

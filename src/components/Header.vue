@@ -1,15 +1,25 @@
 <script setup>
-import { ref, inject } from "vue";
-import Button from "./Button.vue";
-import { vClickOutside } from "@/directives/clickOutside";
+import { ref, inject } from "vue"
+import Button from "./Button.vue"
+import { vClickOutside } from "@/directives/clickOutside"
 
-const profile = ref(false);
-const { activeTheme, setTheme } = inject("theme");
-const { mobileMenu, toggleMobileMenu } = inject("menu");
-const { addOrEdit, toggleAddOrEdit } = inject("addOrEdit");
+const profile = ref(false)
+const { activeTheme, setTheme } = inject("theme")
+const { mobileMenu, toggleMobileMenu } = inject("menu")
+const { addOrEdit, toggleAddOrEdit } = inject("addOrEdit")
+const { searchQuery, setSearchQuery } = inject('search')
 
 const closeProfile = () => {
   profile.value = false
+}
+
+let debounceTimer = null;
+
+const handleSearch = (event) => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    setSearchQuery(event.target.value)
+  }, 200)
 }
 
 </script>
@@ -22,7 +32,7 @@ const closeProfile = () => {
           d="M2.5 10h15m-15-5h15m-15 10h15" />
       </svg>
     </div>
-    <input type="text" id="search" placeholder="Search by title..." />
+    <input type="text" id="search" placeholder="Search by title..." :value="searchQuery" @input="handleSearch" />
 
     <div class="flex wrapper">
       <Button label="Add Bookmark" color="var(--neutral-0)" background="var(--teal-700)" :isMinimized="true"
@@ -49,7 +59,7 @@ const closeProfile = () => {
             <p class="tp4">Theme</p>
             <div class="theme-btns flex">
               <button class="btn-2" data-theme="light" :class="{ active: activeTheme === 'light' }"
-                @click="setTheme('light'); closeProfile">
+                @click="setTheme('light')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
                   <g clip-path="url(#a)">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
@@ -63,7 +73,7 @@ const closeProfile = () => {
                 </svg>
               </button>
               <button class="btn-2" data-theme="dark" :class="{ active: activeTheme === 'dark' }"
-                @click="setTheme('dark'); closeProfile">
+                @click="setTheme('dark')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
                   <g clip-path="url(#a)">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667"

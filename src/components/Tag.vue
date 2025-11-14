@@ -1,40 +1,57 @@
 <script setup>
-import { inject, computed } from "vue"
+import { inject, computed } from "vue";
 
-const { datas } = inject("datas")
-const { selectedTag, setSelectedTag } = inject("tags")
-const { archived } = inject('archived')
+const { datas } = inject("datas");
+const { selectedTag, setSelectedTag } = inject("tags");
+const { archived } = inject("archived");
+const { mobileMenu, toggleMobileMenu } = inject("menu");
 
 const tags = computed(() => {
-  if (!datas.value) return []
+  if (!datas.value) return [];
 
   const filteredData = archived.value
-    ? datas.value.filter(item => item.isArchived)
-    : datas.value.filter(item => !item.isArchived)
+    ? datas.value.filter((item) => item.isArchived)
+    : datas.value.filter((item) => !item.isArchived);
 
-  const tagCount = {}
+  const tagCount = {};
 
-  filteredData.forEach(item => {
-    item.tags?.forEach(tag => {
+  filteredData.forEach((item) => {
+    item.tags?.forEach((tag) => {
       tagCount[tag] = (tagCount[tag] || 0) + 1;
-    })
-  })
+    });
+  });
 
   return Object.entries(tagCount)
     .map(([label, value]) => ({ label, value }))
     .sort((a, b) => b.value - a.value);
-})
+});
+
+const handleTagSelect = (tagLabel) => {
+  setSelectedTag(tagLabel);
+
+  if (mobileMenu.value === true) {
+    setTimeout(() => {
+      toggleMobileMenu(false);
+    }, 1300);
+  }
+};
 
 defineProps({
   label: String,
   value: Number,
-})
+});
 </script>
 
 <template>
   <div class="tag flex" v-for="(tag, i) in tags" :key="i">
-    <input type="checkbox" :id="tag.label" :name="tag.label" :checked="selectedTag === tag.label"
-      @change="setSelectedTag(tag.label)" class="checkbox-input" />
+    <input
+      type="checkbox"
+      :id="tag.label"
+      :name="tag.label"
+      :checked="selectedTag === tag.label"
+      @change="handleTagSelect(tag.label)"
+      class="checkbox-input"
+    />
     <label class="tp3 checkbox-label" :for="tag.label">
       <span class="check"></span>
       {{ tag.label }}
@@ -100,7 +117,7 @@ label {
   margin-left: -7px;
 }
 
-.checkbox-input:checked+.checkbox-label .check {
+.checkbox-input:checked + .checkbox-label .check {
   background-color: var(--neutral-500);
   border-color: var(--neutral-500);
 }
@@ -109,8 +126,8 @@ label {
   border-color: var(--neutral-500);
 }
 
-.checkbox-input:checked+.checkbox-label .check::after {
-  content: '';
+.checkbox-input:checked + .checkbox-label .check::after {
+  content: "";
   display: block;
   width: 4px;
   height: 8px;
