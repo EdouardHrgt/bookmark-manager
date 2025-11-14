@@ -85,6 +85,9 @@ const bookmarks = computed(() => {
   } else {
     filtered = datas.value.filter((data) => data.isArchived)
   }
+  if (selectedTag.value) {
+    filtered = filtered.filter(data => data.tags.includes(selectedTag.value))
+  }
 
   return useSortByList(sortBy.value, filtered)
 })
@@ -120,6 +123,7 @@ const bookmarks = computed(() => {
   animation: cardFadeIn .5s ease backwards;
   animation-delay: calc(var(--index) * 0.08s);
 }
+
 
 @keyframes cardFadeIn {
   from {

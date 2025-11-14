@@ -1,37 +1,44 @@
 <script setup>
-import { inject, computed } from 'vue'
+import { inject, computed } from "vue"
 
-const { datas } = inject('datas')
-const { selectedTag, setSelectedTag } = inject('tags')
+const { datas } = inject("datas")
+const { selectedTag, setSelectedTag } = inject("tags")
+const { archived } = inject('archived')
 
 const tags = computed(() => {
-  if (!datas.value) return [];
+  if (!datas.value) return []
 
-  const tagCount = {};
+  const filteredData = archived.value
+    ? datas.value.filter(item => item.isArchived)
+    : datas.value.filter(item => !item.isArchived)
 
-  datas.value.forEach(item => {
+  const tagCount = {}
+
+  filteredData.forEach(item => {
     item.tags?.forEach(tag => {
-      tagCount[tag] = (tagCount[tag] || 0) + 1
+      tagCount[tag] = (tagCount[tag] || 0) + 1;
     })
   })
 
   return Object.entries(tagCount)
     .map(([label, value]) => ({ label, value }))
-    .sort((a, b) => b.value - a.value)
-});
+    .sort((a, b) => b.value - a.value);
+})
 
 defineProps({
   label: String,
   value: Number,
 })
-
 </script>
 
 <template>
   <div class="tag flex" v-for="(tag, i) in tags" :key="i">
     <input type="checkbox" :id="tag.label" :name="tag.label" :checked="selectedTag === tag.label"
-      @change="setSelectedTag(tag.label)" />
-    <label class="tp3" :for="tag.label">{{ tag.label }}</label>
+      @change="setSelectedTag(tag.label)" class="checkbox-input" />
+    <label class="tp3 checkbox-label" :for="tag.label">
+      <span class="check"></span>
+      {{ tag.label }}
+    </label>
     <div class="value flex">
       <p class="tp5">{{ tag.value }}</p>
     </div>
@@ -40,8 +47,7 @@ defineProps({
 
 <style scoped>
 .tag {
-  padding-block: 9.7px;
-  padding-inline: 8px;
+  padding-block: 9px;
 }
 
 input {
@@ -66,5 +72,53 @@ label {
 
 label {
   margin-left: 12px;
+}
+
+.checkbox-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.check {
+  width: 16px;
+  height: 16px;
+  aspect-ratio: 1/1;
+  border-radius: 4px;
+  background: transparent;
+  border: 1px solid var(--neutral-400);
+  transition: background-color 0.3s ease-in, border-color 0.3s ease-in;
+  flex-shrink: 0;
+  margin-left: -7px;
+}
+
+.checkbox-input:checked+.checkbox-label .check {
+  background-color: var(--neutral-500);
+  border-color: var(--neutral-500);
+}
+
+.checkbox-label:hover .check {
+  border-color: var(--neutral-500);
+}
+
+.checkbox-input:checked+.checkbox-label .check::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-50%, -50%);
+  position: relative;
+  top: 6.5px;
+  left: 3.35px;
 }
 </style>

@@ -46,7 +46,7 @@ h3 {
   .sidebar {
     display: none;
     position: fixed;
-    inset: 3rem 3rem 0.5rem 3rem;
+    inset: 3rem 3rem 1rem 3rem;
     border-radius: 8px;
     z-index: 99;
     max-width: unset;
