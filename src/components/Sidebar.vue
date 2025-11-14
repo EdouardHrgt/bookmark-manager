@@ -50,6 +50,7 @@ h3 {
     border-radius: 8px;
     z-index: 99;
     max-width: unset;
+    overflow-y: scroll;
   }
 
   .sidebar.active {

@@ -13,6 +13,8 @@ const mobileMenu = ref(false)
 const addOrEdit = ref(false)
 const archived = ref(false);
 const sortBy = ref('most visited')
+const selectedTag = ref(null)
+
 
 const setTheme = (theme) => {
   activeTheme.value = theme
@@ -39,6 +41,10 @@ const toggleMobileMenu = useToggle(mobileMenu)
 const toggleAddOrEdit = useToggle(addOrEdit)
 const toggleArchived = useToggle(archived)
 
+const setSelectedTag = (tag) => {
+  selectedTag.value = selectedTag.value === tag ? null : tag
+}
+
 provide("theme", {
   activeTheme,
   setTheme,
@@ -64,6 +70,11 @@ provide("archived", {
 })
 
 provide('sortBy', sortBy)
+
+provide('tags', {
+  selectedTag,
+  setSelectedTag
+})
 
 const bookmarks = computed(() => {
   if (!datas.value) return []
