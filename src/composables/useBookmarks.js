@@ -1,43 +1,26 @@
-const STORAGE_KEY = 'BOOKMARKS'
-
-const getBookmarks = () => {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []
+export const addBmark = (bookmark, datas) => {
+  datas.value.push(bookmark)
 }
 
-const saveBookmarks = (bookmarks) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks))
-}
-
-export const addBmark = (bookmark) => {
-  const bookmarks = getBookmarks()
-  bookmarks.push(bookmark)
-  saveBookmarks(bookmarks)
-}
-
-export const getBmarks = (item) => {
-  const bookmarks = getBookmarks()
-  if (item && bookmarks.length > 0) {
-    return bookmarks.find((bmark) => bmark.id === item.id)
+export const getBmarks = (datas, item) => {
+  if (item && datas.value.length > 0) {
+    return datas.value.find((bmark) => bmark.id === item.id)
   }
-  return bookmarks
+  return datas.value
 }
 
-export const editBmark = (updatedBookmark) => {
-  const bookmarks = getBookmarks()
-  const index = bookmarks.findIndex((bmark) => bmark.id === updatedBookmark.id)
+export const editBmark = (updatedBookmark, datas) => {
+  const index = datas.value.findIndex((bmark) => bmark.id === updatedBookmark.id)
 
   if (index !== -1) {
-    bookmarks.splice(index, 1, updatedBookmark)
-    saveBookmarks(bookmarks)
+    datas.value.splice(index, 1, updatedBookmark)
   }
 }
 
-export const deleteBmark = (bookmark) => {
-  const bookmarks = getBookmarks()
-  const index = bookmarks.findIndex((bmark) => bmark.id === bookmark.id)
+export const deleteBmark = (bookmark, datas) => {
+  const index = datas.value.findIndex((bmark) => bmark.id === bookmark.id)
 
   if (index !== -1) {
-    bookmarks.splice(index, 1)
-    saveBookmarks(bookmarks)
+    datas.value.splice(index, 1)
   }
 }

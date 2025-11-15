@@ -53,6 +53,10 @@ const setSearchQuery = (query) => {
    searchQuery.value = query
 }
 
+const updateDatas = (newDatas) => {
+   datas.value = newDatas
+}
+
 provide('theme', {
    activeTheme,
    setTheme,
@@ -65,6 +69,7 @@ provide('menu', {
 
 provide('datas', {
    datas,
+   updateDatas,
 })
 
 provide('addOrEdit', {

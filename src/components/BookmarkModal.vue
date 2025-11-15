@@ -2,15 +2,28 @@
 import { ref, inject, computed } from 'vue'
 import { urlValidation } from '@/composables/useFormValidation'
 import { getBmarks, addBmark, editBmark } from '@/composables/useBookmarks'
+import useResetObject from '@/composables/useResetObject'
 
 const { addOrEdit, toggleAddOrEdit } = inject('addOrEdit')
+const { datas } = inject('datas')
 
-const form = ref([
-   { title: '', err: false },
-   { description: '', err: false },
-   { url: '', err: false },
-   { tags: [], err: false },
-])
+const isEdit = ref(false)
+const textIndex = computed(() => (isEdit.value ? 1 : 0))
+const currentBookmark = ref(null)
+
+const startEdit = (bookmark) => {
+   isEdit.value = true
+   currentBookmark.value = bookmark
+
+   form.value = {
+      title: bookmark.title,
+      description: bookmark.description,
+      url: bookmark.url,
+      tags: bookmark.tags.join(', '),
+   }
+
+   toggleAddOrEdit()
+}
 
 const text = ref({
    title: ['Add a Bookmark', 'Edit Bookmark'],
@@ -21,45 +34,104 @@ const text = ref({
    btn: ['Add Bookmark', 'Save Bookmark'],
 })
 
-const isEdit = ref(false)
-const test = ref(false)
+const form = ref({
+   title: '',
+   description: '',
+   url: '',
+   tags: '',
+})
 
-const textIndex = computed(() => (isEdit.value ? 1 : 0))
+const errors = ref({
+   title: false,
+   description: false,
+   url: false,
+   tags: false,
+})
+
+const resetForm = () => {
+   form.value = useResetObject(form.value, '')
+   errors.value = useResetObject(errors.value, false)
+}
+
+const validateForm = () => {
+   let isValid = true
+
+   if (!form.value.title.trim() || form.value.title.length > 25) {
+      errors.value.title = true
+      isValid = false
+   } else {
+      errors.value.title = false
+   }
+
+   if (form.value.description.trim().length < 10) {
+      errors.value.description = true
+      isValid = false
+   } else {
+      errors.value.description = false
+   }
+
+   if (!urlValidation(form.value.url)) {
+      errors.value.url = true
+      isValid = false
+   } else {
+      errors.value.url = false
+   }
+
+   if (!form.value.tags.trim()) {
+      errors.value.tags = true
+      isValid = false
+   } else {
+      errors.value.tags = false
+   }
+
+   return isValid
+}
 
 const handleCancel = () => {
-   form.value = [
-      { title: '', err: false },
-      { description: '', err: false },
-      { url: '', err: false },
-      { tags: [], err: false },
-   ]
+   resetForm()
+   toggleAddOrEdit()
 }
 
-const handleError = () => {
-   if (form[0].title.length === 0) {
-      form[0].err = true
-   } else {
-      form[0].err = false
-   }
-   if (form[1].description.length <= 10) {
-      form[1].err = true
-   } else {
-      form[1].err = false
-   }
-   if (urlValidation(form[2].url) === false) {
-      form[2].err = true
-   } else {
-      form[2].err = false
-   }
-   if (form[3].title.length === 0) {
-      form[3].err = true
-   } else {
-      form[3].err = false
-   }
-   // si tout est ok on appelle submitForm()
-}
 const submitForm = () => {
-   // logique pour soumettre le formulaire
+   if (!validateForm()) {
+      return
+   }
+
+   const bookmark = {
+      id: isEdit.value ? currentBookmark.value.id : getNextId(),
+      title: form.value.title.trim(),
+      description: form.value.description.trim(),
+      url: form.value.url.trim(),
+      tags: form.value.tags
+         .split(',')
+         .map((tag) => tag.trim())
+         .filter(Boolean),
+      createdAt: isEdit.value
+         ? currentBookmark.value.createdAt
+         : new Date().toISOString(),
+      lastVisited: isEdit.value
+         ? currentBookmark.value.lastVisited
+         : new Date().toISOString(),
+      pinned: isEdit.value ? currentBookmark.value.pinned : false,
+      visitCount: isEdit.value ? currentBookmark.value.visitCount : 0,
+      isArchived: isEdit.value ? currentBookmark.value.isArchived : false,
+   }
+
+   if (isEdit.value) {
+      editBmark(bookmark, datas)
+   } else {
+      addBmark(bookmark, datas)
+   }
+
+   resetForm()
+   toggleAddOrEdit()
+}
+
+const getNextId = () => {
+   if (datas.value.length === 0) return '01'
+
+   const maxId = Math.max(...datas.value.map((b) => parseInt(b.id)))
+   return String(maxId + 1).padStart(2, '0')
 }
 </script>
 
@@ -68,7 +140,7 @@ const submitForm = () => {
       <div class="title flex">
          <h2 class="tp1">{{ text.title[textIndex] }}</h2>
          <svg
-            @click="toggleAddOrEdit()"
+            @click="handleCancel"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -84,42 +156,69 @@ const submitForm = () => {
          </svg>
       </div>
       <p class="tp4-medium infos">{{ text.info[textIndex] }}</p>
-      <form @submit.prevent="submitForm" novalidate="true">
+
+      <form @submit.prevent="submitForm" novalidate>
          <div class="form-group">
             <label for="title">Title *</label>
-            <input type="text" name="title" id="title" v-model="form[0].title" />
-            <p class="error tp4-medium" v-if="test">enter a title</p>
+            <input
+               type="text"
+               name="title"
+               id="title"
+               v-model="form.title"
+               :class="{ 'input-error': errors.title }"
+            />
+            <p class="error tp4-medium" v-if="errors.title">
+               Please enter a title smaller than 25 characters
+            </p>
          </div>
+
          <div class="form-group">
             <label for="description">Description *</label>
-            <input
-               type="textarea"
-               name="tdescription"
+            <textarea
+               name="description"
                id="description"
-               v-model="form[1].description"
-            />
-            <p class="error tp4-medium" v-if="test">enter a description</p>
+               v-model="form.description"
+               :class="{ 'input-error': errors.description }"
+               rows="4"
+            ></textarea>
+            <p class="error tp4-medium" v-if="errors.description">
+               Description must be at least 10 characters
+            </p>
          </div>
+
          <div class="form-group">
             <label for="url">Website URL *</label>
-            <input type="text" name="url" id="url" v-model="form[2].url" />
-            <p class="error tp4-medium" v-if="test">enter a valid url</p>
+            <input
+               type="url"
+               name="url"
+               id="url"
+               v-model="form.url"
+               :class="{ 'input-error': errors.url }"
+               placeholder="https://example.com"
+            />
+            <p class="error tp4-medium" v-if="errors.url">Please enter a valid URL</p>
          </div>
+
          <div class="form-group">
             <label for="tags">Tags *</label>
             <input
                type="text"
                name="tags"
                id="tags"
-               v-model="form[3].tags"
+               v-model="form.tags"
+               :class="{ 'input-error': errors.tags }"
                placeholder="e.g design, learning, tools"
             />
+            <p class="error tp4-medium" v-if="errors.tags">
+               Please enter at least one tag
+            </p>
          </div>
+
          <div class="btn-group flex">
-            <button type="button" class="btn" @click="handleCancel">
+            <button type="button" class="btn btn-secondary" @click="handleCancel">
                <p class="tp3">Cancel</p>
             </button>
-            <button type="submit" class="btn" @click="handleError">
+            <button type="submit" class="btn btn-primary">
                <p class="tp3">{{ text.btn[textIndex] }}</p>
             </button>
          </div>
@@ -128,6 +227,10 @@ const submitForm = () => {
 </template>
 
 <style scoped>
+.input-error {
+   border-color: var(--red-600);
+}
+
 section {
    max-width: 570px;
    width: 100%;
@@ -184,7 +287,8 @@ label {
    margin-bottom: 2px;
 }
 
-input {
+input,
+textarea {
    border-radius: 8px;
    border: 1px solid var(--neutral-800);
    padding: 12px 1rem;
