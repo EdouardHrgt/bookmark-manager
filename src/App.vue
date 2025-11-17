@@ -17,6 +17,7 @@ const selectedTag = ref(null)
 const searchQuery = ref('')
 const editedBmk = ref(null)
 const editingBookmarkId = ref(null)
+const alertBox = ref(true)
 
 const setTheme = (theme) => {
    activeTheme.value = theme
@@ -111,6 +112,7 @@ provide('editing', {
 })
 
 provide('editedBmk', editedBmk)
+provide('alertBox', alertBox)
 
 const bookmarks = computed(() => {
    if (!datas.value) return []
@@ -141,6 +143,7 @@ const bookmarks = computed(() => {
    <div>
       <Header />
       <BookmarkHeader :label="archived ? 'All Archived' : 'All Bookmarks'" />
+      <AlertBox />
       <BookmarkEdit v-if="addOrEdit" />
       <TransitionGroup name="card-list" tag="main" class="grid mx-width">
          <Card

@@ -252,7 +252,7 @@ section {
    border-radius: 16px;
    background-color: var(--neutral-0);
    padding: 2rem 1.5rem;
-   position: absolute;
+   position: fixed;
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
