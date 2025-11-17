@@ -17,7 +17,7 @@ const selectedTag = ref(null)
 const searchQuery = ref('')
 const editedBmk = ref(null)
 const editingBookmarkId = ref(null)
-const alertBox = ref(true)
+const alertBox = ref({ state: false, id: -1 })
 
 const setTheme = (theme) => {
    activeTheme.value = theme
@@ -68,6 +68,19 @@ const stopEditingBookmark = () => {
    editingBookmarkId.value = null
 }
 
+const resetAlertBox = () => {
+   alertBox.value.state = false
+   alertBox.value.id = -1
+}
+
+const setAlertBox = (int) => {
+   alertBox.value.state = true
+   alertBox.value.id = int
+   setTimeout(() => {
+      resetAlertBox()
+   }, '2500')
+}
+
 provide('theme', {
    activeTheme,
    setTheme,
@@ -112,7 +125,8 @@ provide('editing', {
 })
 
 provide('editedBmk', editedBmk)
-provide('alertBox', alertBox)
+
+provide('alertBox', { alertBox, resetAlertBox, setAlertBox })
 
 const bookmarks = computed(() => {
    if (!datas.value) return []

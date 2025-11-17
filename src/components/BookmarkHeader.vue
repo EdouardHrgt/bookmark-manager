@@ -6,7 +6,6 @@ import { vClickOutside } from '@/directives/clickOutside'
 const sortOptions = ['Recently added', 'Recently visited', 'Most visited']
 
 const isOpen = ref(false)
-const { archived, toggleArchived } = inject('archived')
 const sortBy = inject('sortBy')
 
 defineProps({

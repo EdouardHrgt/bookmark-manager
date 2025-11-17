@@ -25,6 +25,7 @@ const options = [
 import { ref, inject } from 'vue'
 const { addOrEdit, toggleAddOrEdit } = inject('addOrEdit')
 const { stopEditingBookmark } = inject('editing')
+const { alertBox, resetAlertBox, setAlertBox } = inject('alertBox')
 
 const props = defineProps({
    bookmark: {
@@ -42,16 +43,20 @@ const handleOptionClick = (label) => {
    } else if (label === 'Archive') {
       if (props.bookmark.isArchived === false) {
          props.bookmark.isArchived = true
+         setAlertBox(5)
       } else {
          props.bookmark.isArchived = false
+         setAlertBox(6)
       }
    } else if (label === 'Visit') {
       window.open(props.bookmark.url, '_blank')
       props.bookmark.visitCount++
    } else if (label === 'Copy URL') {
       navigator.clipboard.writeText(props.bookmark.url).then(() => {})
+      setAlertBox(3)
    } else if (label === 'Pin') {
       props.bookmark.pinned = !props.bookmark.pinned
+      setAlertBox(4)
    }
    stopEditingBookmark()
 }

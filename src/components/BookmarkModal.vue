@@ -8,6 +8,7 @@ const { addOrEdit, toggleAddOrEdit } = inject('addOrEdit')
 const { datas } = inject('datas')
 const editedBmk = inject('editedBmk')
 const { stopEditingBookmark } = inject('editing')
+const { setAlertBox } = inject('alertBox')
 
 const isEdit = ref(false)
 const textIndex = computed(() => (isEdit.value ? 1 : 0))
@@ -123,8 +124,10 @@ const submitForm = () => {
    if (isEdit.value) {
       editBmark(bookmark, datas)
       stopEditingBookmark()
+      setAlertBox(2)
    } else {
       addBmark(bookmark, datas)
+      setAlertBox(1)
    }
 
    resetAll()

@@ -258,7 +258,7 @@ article strong {
 }
 
 .pinned svg {
-   stroke: var(--red-600h);
+   stroke: var(--red-600);
 }
 
 @media (max-width: 800px) {
