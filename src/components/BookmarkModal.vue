@@ -1,29 +1,17 @@
 <script setup>
-import { ref, inject, computed } from 'vue'
+import { ref, inject, computed, watch } from 'vue'
 import { urlValidation } from '@/composables/useFormValidation'
 import { getBmarks, addBmark, editBmark } from '@/composables/useBookmarks'
 import useResetObject from '@/composables/useResetObject'
 
 const { addOrEdit, toggleAddOrEdit } = inject('addOrEdit')
 const { datas } = inject('datas')
+const editedBmk = inject('editedBmk')
+const { stopEditingBookmark } = inject('editing')
 
 const isEdit = ref(false)
 const textIndex = computed(() => (isEdit.value ? 1 : 0))
 const currentBookmark = ref(null)
-
-const startEdit = (bookmark) => {
-   isEdit.value = true
-   currentBookmark.value = bookmark
-
-   form.value = {
-      title: bookmark.title,
-      description: bookmark.description,
-      url: bookmark.url,
-      tags: bookmark.tags.join(', '),
-   }
-
-   toggleAddOrEdit()
-}
 
 const text = ref({
    title: ['Add a Bookmark', 'Edit Bookmark'],
@@ -51,6 +39,13 @@ const errors = ref({
 const resetForm = () => {
    form.value = useResetObject(form.value, '')
    errors.value = useResetObject(errors.value, false)
+}
+
+const resetAll = () => {
+   resetForm()
+   isEdit.value = false
+   currentBookmark.value = null
+   editedBmk.value = null
 }
 
 const validateForm = () => {
@@ -88,8 +83,15 @@ const validateForm = () => {
 }
 
 const handleCancel = () => {
-   resetForm()
+   resetAll()
    toggleAddOrEdit()
+}
+
+const getNextId = () => {
+   if (datas.value.length === 0) return '01'
+
+   const maxId = Math.max(...datas.value.map((b) => parseInt(b.id)))
+   return String(maxId + 1).padStart(2, '0')
 }
 
 const submitForm = () => {
@@ -102,6 +104,7 @@ const submitForm = () => {
       title: form.value.title.trim(),
       description: form.value.description.trim(),
       url: form.value.url.trim(),
+      favicon: isEdit.value ? currentBookmark.value.favicon : '',
       tags: form.value.tags
          .split(',')
          .map((tag) => tag.trim())
@@ -119,20 +122,32 @@ const submitForm = () => {
 
    if (isEdit.value) {
       editBmark(bookmark, datas)
+      stopEditingBookmark()
    } else {
       addBmark(bookmark, datas)
    }
 
-   resetForm()
+   resetAll()
    toggleAddOrEdit()
 }
 
-const getNextId = () => {
-   if (datas.value.length === 0) return '01'
+watch(
+   editedBmk,
+   (bookmark) => {
+      if (bookmark) {
+         isEdit.value = true
+         currentBookmark.value = bookmark
 
-   const maxId = Math.max(...datas.value.map((b) => parseInt(b.id)))
-   return String(maxId + 1).padStart(2, '0')
-}
+         form.value = {
+            title: bookmark.title,
+            description: bookmark.description,
+            url: bookmark.url,
+            tags: bookmark.tags.join(', '),
+         }
+      }
+   },
+   { immediate: true }
+)
 </script>
 
 <template>

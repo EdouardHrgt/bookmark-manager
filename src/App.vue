@@ -15,6 +15,8 @@ const archived = ref(false)
 const sortBy = ref('most visited')
 const selectedTag = ref(null)
 const searchQuery = ref('')
+const editedBmk = ref(null)
+const editingBookmarkId = ref(null)
 
 const setTheme = (theme) => {
    activeTheme.value = theme
@@ -57,6 +59,14 @@ const updateDatas = (newDatas) => {
    datas.value = newDatas
 }
 
+const startEditingBookmark = (bookmarkId) => {
+   editingBookmarkId.value = bookmarkId
+}
+
+const stopEditingBookmark = () => {
+   editingBookmarkId.value = null
+}
+
 provide('theme', {
    activeTheme,
    setTheme,
@@ -94,6 +104,14 @@ provide('search', {
    setSearchQuery,
 })
 
+provide('editing', {
+   editingBookmarkId,
+   startEditingBookmark,
+   stopEditingBookmark,
+})
+
+provide('editedBmk', editedBmk)
+
 const bookmarks = computed(() => {
    if (!datas.value) return []
 
@@ -128,16 +146,7 @@ const bookmarks = computed(() => {
          <Card
             v-for="(data, index) in bookmarks"
             :key="`${data.id}-${sortBy}-${archived}`"
-            :style="{ '--index': index }"
-            :label="data.title"
-            :avatar="data.favicon"
-            :url="data.url"
-            :txt="data.description"
-            :tags="data.tags"
-            :metrix="data.metrix"
-            :visits="data.visitCount"
-            :created="data.createdAt"
-            :visited="data.lastVisited"
+            :bookmark="data"
          />
       </TransitionGroup>
    </div>
