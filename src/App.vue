@@ -19,6 +19,7 @@ const editedBmk = ref(null)
 const editingBookmarkId = ref(null)
 const alertBox = ref({ state: false, id: -1 })
 const confirmation = ref({ state: false, id: -1 })
+let confirmationResolve = null
 
 const setTheme = (theme) => {
    activeTheme.value = theme
@@ -74,11 +75,6 @@ const resetAlertBox = () => {
    alertBox.value.id = -1
 }
 
-const resetConfirmation = () => {
-   confirmation.value.state = false
-   confirmation.value.id = -1
-}
-
 const setAlertBox = (int) => {
    alertBox.value.state = true
    alertBox.value.id = int
@@ -90,6 +86,30 @@ const setAlertBox = (int) => {
 const setConfirmation = (int) => {
    confirmation.value.state = true
    confirmation.value.id = int
+
+   return new Promise((resolve) => {
+      confirmationResolve = resolve
+   })
+}
+
+const resetConfirmation = () => {
+   confirmation.value.state = false
+   confirmation.value.id = -1
+
+   if (confirmationResolve) {
+      confirmationResolve(false)
+      confirmationResolve = null
+   }
+}
+
+const confirmAction = () => {
+   confirmation.value.state = false
+   confirmation.value.id = -1
+
+   if (confirmationResolve) {
+      confirmationResolve(true)
+      confirmationResolve = null
+   }
 }
 
 provide('theme', {
@@ -139,7 +159,12 @@ provide('editedBmk', editedBmk)
 
 provide('alertBox', { alertBox, resetAlertBox, setAlertBox })
 
-provide('confirmation', { confirmation, resetConfirmation, setConfirmation })
+provide('confirmation', {
+   confirmation,
+   setConfirmation,
+   resetConfirmation,
+   confirmAction,
+})
 
 const bookmarks = computed(() => {
    if (!datas.value) return []

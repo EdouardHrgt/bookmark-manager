@@ -64,11 +64,12 @@ h3 {
       overflow-y: auto;
       transition: all 0.2s ease-out;
       pointer-events: none;
+      bottom: 5vh;
+      top: 0;
    }
 
    .sidebar.active {
       left: 0;
-
       pointer-events: all;
    }
 

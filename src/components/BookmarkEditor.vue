@@ -35,6 +35,7 @@ const { addOrEdit, toggleAddOrEdit } = inject('addOrEdit')
 const { stopEditingBookmark } = inject('editing')
 const { alertBox, resetAlertBox, setAlertBox } = inject('alertBox')
 const { archived } = inject('archived')
+const { setConfirmation } = inject('confirmation')
 
 const props = defineProps({
    bookmark: {
@@ -70,17 +71,20 @@ const options = computed(() => {
       })
 })
 
-const handleOptionClick = (label) => {
+const handleOptionClick = async (label) => {
    if (label === 'Edit') {
       editedBmk.value = props.bookmark
       toggleAddOrEdit()
-   } else if (label === 'Archive' || label === 'Unarchive') {
-      if (props.bookmark.isArchived === false) {
+   } else if (label === 'Archive') {
+      const confirmed = await setConfirmation(1)
+      if (confirmed) {
          props.bookmark.isArchived = true
          props.bookmark.pinned = false
-
          setAlertBox(5)
-      } else {
+      }
+   } else if (label === 'Unarchive') {
+      const confirmed = await setConfirmation(2)
+      if (confirmed) {
          props.bookmark.isArchived = false
          setAlertBox(6)
       }
@@ -94,11 +98,13 @@ const handleOptionClick = (label) => {
       props.bookmark.pinned = !props.bookmark.pinned
       setAlertBox(4)
    } else if (label === 'Delete') {
-      if (confirm(`Are you sure you want to delete "${props.bookmark.title}"?`)) {
+      const confirmed = await setConfirmation(3)
+      if (confirmed) {
          deleteBmark(props.bookmark, datas)
          setAlertBox(7)
       }
    }
+
    stopEditingBookmark()
 }
 </script>

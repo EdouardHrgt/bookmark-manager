@@ -1,6 +1,6 @@
 <script setup>
-import { ref, inject } from 'vue'
-const { confirmation, resetConfirmation, setConfirmation } = inject('confirmation')
+import { ref, inject, computed } from 'vue'
+const { confirmation, resetConfirmation, confirmAction } = inject('confirmation')
 
 const options = {
    1: {
@@ -19,15 +19,16 @@ const options = {
       btn: 'Delete permanently',
    },
 }
-const isToDelete = ref(false)
-const cancel = () => {}
-const confirm = () => {}
+
+const currentOption = computed(() => {
+   return options[confirmation.value.id] || options[1]
+})
 </script>
 
 <template>
-   <section>
+   <section v-if="confirmation.state">
       <svg
-         @click="cancel"
+         @click="resetConfirmation"
          xmlns="http://www.w3.org/2000/svg"
          width="20"
          height="20"
@@ -42,16 +43,19 @@ const confirm = () => {}
          />
       </svg>
       <div class="txt">
-         <strong class="tp1"></strong>
-         <p class="tp4-medium"></p>
-         <p></p>
+         <strong class="tp1">{{ currentOption.label }}</strong>
+         <p class="tp4-medium">{{ currentOption.msg }}</p>
       </div>
       <div class="buttons flex">
-         <button class="btn" data-primary="wh" @click="cancel">
+         <button class="btn" data-primary="wh" @click="resetConfirmation">
             <p class="tp4-medium">Cancel</p>
          </button>
-         <button class="btn" @click="confirm" :class="{ delete: confirmation.id == 3 }">
-            <p class="tp4-medium">Archive</p>
+         <button
+            class="btn"
+            @click="confirmAction"
+            :class="{ delete: confirmation.id == 3 }"
+         >
+            <p class="tp4-medium">{{ currentOption.btn }}</p>
          </button>
       </div>
    </section>
@@ -63,9 +67,9 @@ section {
    background-color: var(--neutral-0);
    padding: 1rem;
    width: 420px;
-   filter: drop-shadow(-5px 5px 6px var(--neutral-500));
+   filter: drop-shadow(0px 0px 10px var(--neutral-500));
    position: fixed;
-   z-index: 75;
+   z-index: 95;
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
