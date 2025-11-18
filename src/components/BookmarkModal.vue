@@ -357,7 +357,7 @@ textarea {
 }
 
 .btn-group button p {
-   color: var(--neutral-0);
+   color: var(--base-white);
 }
 
 .error {

@@ -1,5 +1,9 @@
 <script setup>
-const options = [
+import { inject, computed } from 'vue'
+import { deleteBmark } from '@/composables/useBookmarks'
+const { datas } = inject('datas')
+
+const baseOptions = [
    {
       icon: `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M17.5 7.5v-5m0 0h-5m5 0-6.667 6.667m-2.5-5H6.5c-1.4 0-2.1 0-2.635.272a2.5 2.5 0 0 0-1.093 1.093C2.5 6.066 2.5 6.767 2.5 8.167V13.5c0 1.4 0 2.1.272 2.635a2.5 2.5 0 0 0 1.093 1.092C4.4 17.5 5.1 17.5 6.5 17.5h5.333c1.4 0 2.1 0 2.635-.273a2.5 2.5 0 0 0 1.093-1.092c.272-.535.272-1.235.272-2.635v-1.833"/></svg>`,
       label: 'Visit',
@@ -17,15 +21,20 @@ const options = [
       label: 'Edit',
    },
    {
+      icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M7.5 2.5h5M2.5 5h15m-1.667 0-.584 8.766c-.088 1.315-.132 1.973-.416 2.472a2.5 2.5 0 0 1-1.082 1.012c-.516.25-1.175.25-2.493.25H8.742c-1.318 0-1.977 0-2.493-.25a2.5 2.5 0 0 1-1.082-1.012c-.284-.5-.328-1.157-.416-2.472L4.167 5m4.166 3.75v4.167m3.334-4.167v4.167"/></svg>`,
+      label: 'Delete',
+   },
+   {
       icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3.334 6.664a2 2 0 0 1-.325-.03 1.67 1.67 0 0 1-1.31-1.309c-.032-.16-.032-.354-.032-.742 0-.387 0-.58.032-.741a1.67 1.67 0 0 1 1.31-1.31c.16-.032.354-.032.741-.032h12.5c.387 0 .581 0 .742.032a1.67 1.67 0 0 1 1.31 1.31c.032.16.032.354.032.741 0 .388 0 .581-.032.742a1.67 1.67 0 0 1-1.31 1.31 2 2 0 0 1-.325.029m-8.333 4.17h3.333M3.334 6.666h13.333V13.5c0 1.4 0 2.1-.273 2.635a2.5 2.5 0 0 1-1.092 1.092c-.535.273-1.235.273-2.635.273H7.334c-1.4 0-2.1 0-2.635-.273a2.5 2.5 0 0 1-1.093-1.092c-.272-.535-.272-1.235-.272-2.635z"/></svg>`,
       label: 'Archive',
-      labelBis: 'Unarchive',
+      labelAlt: 'Unarchive',
    },
 ]
-import { ref, inject } from 'vue'
+
 const { addOrEdit, toggleAddOrEdit } = inject('addOrEdit')
 const { stopEditingBookmark } = inject('editing')
 const { alertBox, resetAlertBox, setAlertBox } = inject('alertBox')
+const { archived } = inject('archived')
 
 const props = defineProps({
    bookmark: {
@@ -36,13 +45,40 @@ const props = defineProps({
 
 const editedBmk = inject('editedBmk')
 
+const options = computed(() => {
+   return baseOptions
+      .filter((option) => {
+         if (archived.value && option.label === 'Edit') {
+            return false
+         }
+         if (!archived.value && option.label === 'Delete') {
+            return false
+         }
+         if (props.bookmark.isArchived && option.label === 'Pin') {
+            return false
+         }
+         return true
+      })
+      .map((option) => {
+         if (option.label === 'Archive' && props.bookmark.isArchived) {
+            return {
+               ...option,
+               label: option.labelAlt,
+            }
+         }
+         return option
+      })
+})
+
 const handleOptionClick = (label) => {
    if (label === 'Edit') {
       editedBmk.value = props.bookmark
       toggleAddOrEdit()
-   } else if (label === 'Archive') {
+   } else if (label === 'Archive' || label === 'Unarchive') {
       if (props.bookmark.isArchived === false) {
          props.bookmark.isArchived = true
+         props.bookmark.pinned = false
+
          setAlertBox(5)
       } else {
          props.bookmark.isArchived = false
@@ -57,6 +93,11 @@ const handleOptionClick = (label) => {
    } else if (label === 'Pin') {
       props.bookmark.pinned = !props.bookmark.pinned
       setAlertBox(4)
+   } else if (label === 'Delete') {
+      if (confirm(`Are you sure you want to delete "${props.bookmark.title}"?`)) {
+         deleteBmark(props.bookmark, datas)
+         setAlertBox(7)
+      }
    }
    stopEditingBookmark()
 }

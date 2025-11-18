@@ -18,6 +18,7 @@ const searchQuery = ref('')
 const editedBmk = ref(null)
 const editingBookmarkId = ref(null)
 const alertBox = ref({ state: false, id: -1 })
+const confirmation = ref({ state: false, id: -1 })
 
 const setTheme = (theme) => {
    activeTheme.value = theme
@@ -73,12 +74,22 @@ const resetAlertBox = () => {
    alertBox.value.id = -1
 }
 
+const resetConfirmation = () => {
+   confirmation.value.state = false
+   confirmation.value.id = -1
+}
+
 const setAlertBox = (int) => {
    alertBox.value.state = true
    alertBox.value.id = int
    setTimeout(() => {
       resetAlertBox()
    }, '2500')
+}
+
+const setConfirmation = (int) => {
+   confirmation.value.state = true
+   confirmation.value.id = int
 }
 
 provide('theme', {
@@ -128,6 +139,8 @@ provide('editedBmk', editedBmk)
 
 provide('alertBox', { alertBox, resetAlertBox, setAlertBox })
 
+provide('confirmation', { confirmation, resetConfirmation, setConfirmation })
+
 const bookmarks = computed(() => {
    if (!datas.value) return []
 
@@ -167,6 +180,7 @@ const bookmarks = computed(() => {
          />
       </TransitionGroup>
    </div>
+   <Confirmation v-if="confirmation.state" />
    <Shade />
 </template>
 
